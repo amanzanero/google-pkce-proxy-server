@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 )
@@ -24,8 +25,12 @@ func main() {
 		log.Fatalln(err)
 	}
 	http.HandleFunc("/", reqIDMiddleware1(proxyRequest(config)))
-	fmt.Println("Serve on :8080")
-	err = http.ListenAndServe("127.0.0.1:8080", nil)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	fmt.Println("Server listening on :" + port)
+	err = http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatalf("server error: %v\n", err)
 	}
